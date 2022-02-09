@@ -23,9 +23,14 @@ mongoose.Query.prototype.exec = async function () {
 
   // If we do, return that
   if (cacheValue) {
-    const doc = new this.model(JSON.parse(cachedValue)); // To take all the data we've stored and try to turn it into an actual document.
+    //Creating a new instance of the query model and storing it in a doc const.
+    const doc = JSON.parse(cachedValue);
 
-    return doc;
+    // To take all the data we've stored and try to turn it into an actual document.
+    // this.model is a reference of the model that represents this query or this query is attached to.
+    return Array.isArray(doc)
+      ? doc.map((d) => new this.model(d))
+      : new this.model(doc);
   }
 
   //Otherwise, issue the query and store the result in redis.
