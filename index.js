@@ -17,12 +17,13 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(
+  // cookieSession is responsible for maintaining a session on incoming request.
   cookieSession({
     maxAge: 30 * 24 * 60 * 60 * 1000,
     keys: [keys.cookieKey],
   })
 );
-app.use(passport.initialize());
+app.use(passport.initialize()); // To handle authentication in our app. (the entiere google oauth process)
 app.use(passport.session());
 
 require('./routes/authRoutes')(app);

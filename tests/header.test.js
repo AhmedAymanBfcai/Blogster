@@ -1,18 +1,34 @@
-const puppeteer = require('puppeteer');
+const Page = require('./helpers/page');
 
-test('Adding two numbers', () => {
-  const sum = 1 + 2;
-  expect(sum).toEqual(3);
+let page;
+
+beforeEach(async () => {
+  page = await Page.build();
+  await page.goto('http://localhost:3000');
 });
 
-test('We can launch a browser', async () => {
-  const browser = await puppeteer.launch({
-    headless: false, // Whenver you use the term headless means that the browser will open without some GUI. By assign it for false that mean Do not start in headless mode.
-  });
-  const page = await browser.newPage();
-  await page.goto('localhost:3000');
+afterEach(async () => {
+  await page.close();
+});
 
-  const text = await page.$eval('a.brand-logo', (el) => el.innerHTML);
+test('the header has the correct text', async () => {
+  const text = await page.getContentsOf('a.brand-logo');
+
   expect(text).toEqual('Blogster');
-  //   jest.setTimeout(30000);
-}, 30000); //Timeout - Async callback was not invoked within the 5000ms timeout specified by jest.setTimeout. so we passed 30000
+});
+
+test('clicking login starts oauth flow', async () => {
+  await page.click('.right a');
+
+  const url = await page.url();
+
+  expect(url).toMatch(/accounts\.google\.com/);
+});
+
+test('When signed in, shows logout button', async () => {
+  await page.login();
+
+  const text = await page.$eval('a[href="/auth/logout"]', (el) => el.innerHTML);
+
+  expect(text).toEqual('Logout');
+});
