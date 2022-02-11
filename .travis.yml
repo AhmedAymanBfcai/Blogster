@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - '8'
+dist: trusty # trusty is a very specific version of linux.
+services:
+  - mongodb
+  - redis-server
+env:
+  - NODE_ENV=ci
+
+cache: # We need to tell travis that take a copy for some directories for future using to spped up our build.
+  directories:
+    - node_modules
+    - client/node_modules
+install: # setting up some commands we want to execute as the command line.
+  - npm install
+  - npm run buid
+script: # Same as install one, but in which we can start our server, test
+  - nohub npm run start & # nohub: If the shell is closed, don't kill anything this command creates, &: Run this command in a subshell.(in the background)
+  - sleep 3 #That means wait for three seconds so I can again easily execute this. It gives us a little bit of time to start our server up.
+  - npm run test
