@@ -3,9 +3,9 @@
 const mongoose = require('mongoose');
 const redis = require('redis');
 const util = require('util'); //Built in node runtime, Has some function utils we can use.
+const keys = require('../config/keys');
 
-const redisUrl = 'redis://127.0.0.1:6379';
-const client = redis.createClient(redisUrl);
+const client = redis.createClient(keys.redisUrl);
 client.hget = util.promisify(client.hget); // To promisify a function (To return a promise instead of using callback)
 const exec = mongoose.Query.prototype.exec; // To get a reference to the existing default exec function that is defined on a mongoose query. UnTouched copy of the query supposed to be executed.
 

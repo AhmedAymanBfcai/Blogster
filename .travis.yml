@@ -7,7 +7,7 @@ services:
   - redis-server
 env:
   - NODE_ENV=ci
-
+  - PORT=3000
 cache: # We need to tell travis that take a copy for some directories for future using to spped up our build.
   directories:
     - node_modules
