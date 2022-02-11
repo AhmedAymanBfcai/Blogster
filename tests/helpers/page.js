@@ -6,16 +6,16 @@ class CustomPage {
   static async build() {
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox']
+      args: ['--no-sandbox'], // This option is to keep us from having to tinker with some of settings of the virtual machine we will be assigned by travis.
     });
 
     const page = await browser.newPage();
     const customPage = new CustomPage(page);
 
     return new Proxy(customPage, {
-      get: function(target, property) {
+      get: function (target, property) {
         return customPage[property] || browser[property] || page[property];
-      }
+      },
     });
   }
 
@@ -34,18 +34,18 @@ class CustomPage {
   }
 
   async getContentsOf(selector) {
-    return this.page.$eval(selector, el => el.innerHTML);
+    return this.page.$eval(selector, (el) => el.innerHTML);
   }
 
   get(path) {
-    return this.page.evaluate(_path => {
+    return this.page.evaluate((_path) => {
       return fetch(_path, {
         method: 'GET',
         credentials: 'same-origin',
         headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then(res => res.json());
+          'Content-Type': 'application/json',
+        },
+      }).then((res) => res.json());
     }, path);
   }
 
@@ -56,10 +56,10 @@ class CustomPage {
           method: 'POST',
           credentials: 'same-origin',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(_data)
-        }).then(res => res.json());
+          body: JSON.stringify(_data),
+        }).then((res) => res.json());
       },
       path,
       data
