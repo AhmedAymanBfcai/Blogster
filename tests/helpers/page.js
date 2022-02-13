@@ -6,7 +6,7 @@ class CustomPage {
   static async build() {
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox'], // This option is to keep us from having to tinker with some of settings of the virtual machine we will be assigned by travis.
+      args: ['--no-sandbox'], // This option is to keep us from having to tinker around with some of settings of the virtual machine we will be assigned by travis.
     });
 
     const page = await browser.newPage();
